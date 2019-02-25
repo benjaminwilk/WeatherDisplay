@@ -1,0 +1,11 @@
+c:\users\mhp-14m-d5\source\repos\WeatherDisplay\WeatherDisplay\bin\Debug\WeatherDisplay.exe.config
+c:\users\mhp-14m-d5\source\repos\WeatherDisplay\WeatherDisplay\bin\Debug\WeatherDisplay.exe
+c:\users\mhp-14m-d5\source\repos\WeatherDisplay\WeatherDisplay\bin\Debug\WeatherDisplay.pdb
+c:\users\mhp-14m-d5\source\repos\WeatherDisplay\WeatherDisplay\obj\Debug\WeatherDisplay.csprojAssemblyReference.cache
+c:\users\mhp-14m-d5\source\repos\WeatherDisplay\WeatherDisplay\obj\Debug\WeatherDisplay.csproj.CoreCompileInputs.cache
+c:\users\mhp-14m-d5\source\repos\WeatherDisplay\WeatherDisplay\obj\Debug\WeatherDisplay.exe
+c:\users\mhp-14m-d5\source\repos\WeatherDisplay\WeatherDisplay\obj\Debug\WeatherDisplay.pdb
+c:\users\mhp-14m-d5\source\repos\WeatherDisplay\WeatherDisplay\bin\Debug\Newtonsoft.Json.dll
+c:\users\mhp-14m-d5\source\repos\WeatherDisplay\WeatherDisplay\bin\Debug\Newtonsoft.Json.pdb
+c:\users\mhp-14m-d5\source\repos\WeatherDisplay\WeatherDisplay\bin\Debug\Newtonsoft.Json.xml
+c:\users\mhp-14m-d5\source\repos\WeatherDisplay\WeatherDisplay\obj\Debug\WeatherDisplay.csproj.CopyComplete

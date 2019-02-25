@@ -1,2 +1,2 @@
-# WeatherDisplay
-Weather Parser
+# Weather-Display
+Weather Display Application
