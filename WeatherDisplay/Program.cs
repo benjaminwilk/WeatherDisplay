@@ -52,7 +52,8 @@ namespace WeatherDisplay {
             wd.SetZip(UserInputZip());
             if (ValidateZip(wd.GetZip()) == true) {
                 try {
-                    String rawJsonData = FormatRawJsonData(MainClass.downloadWebData(GetZipCodeURL(wd.GetZip())));
+                    String downloadedJsonData = MainClass.downloadWebData(GetZipCodeURL(wd.GetZip()));
+                    String rawJsonData = FormatRawJsonData(downloadedJsonData);
                     WeatherJson account = JsonConvert.DeserializeObject<WeatherJson>(rawJsonData);
                     ParseFormattedJsonData(account, wd);
                 } catch (WebException webExec) {
@@ -109,17 +110,18 @@ namespace WeatherDisplay {
     class ObtainICAO {
         public ObtainICAO(WeatherData wd) {
             String[] airportList = SplitAirportsByNewLine(ObtainRawAirportData(wd));
-            DisplayICAOCodes(ObtainICAOCode(airportList));
+            //DisplayICAOCodes();
+            parseForK(wd, ObtainICAOCode(airportList));
             //String rawAirportData = MainClass.downloadWebData(getAiportIcaoURL(wd.getZip()));
             //Console.WriteLine(rawAirportData);
         }
 
-        private String GetAiportIcaoURL(String userZip) {
-            return "https://www.allplaces.us/afz.cgi?s=" +userZip + "&rad=30";
+        private String GetAiportIcaoURL(WeatherData wd) {
+            return @"https://www.travelmath.com/nearest-airport/" + wd.GetZip();
         }
 
         public String ObtainRawAirportData(WeatherData wd) {
-            String airportURL = @"https://www.travelmath.com/nearest-airport/" + wd.GetZip();
+            String airportURL = GetAiportIcaoURL(wd);
             HtmlWeb webData = new HtmlWeb();
             var htmlDoc = webData.Load(airportURL);
             var node = htmlDoc.DocumentNode.SelectSingleNode(".//body/div[@id='wrapper']");
@@ -132,29 +134,51 @@ namespace WeatherDisplay {
             return rawAirportData.Split('\n');
         }
 
-        public String[] ObtainICAOCode(String[] rawAirportList) {
-            String[] icaoList = new string[20];
+        public ArrayList ObtainICAOCode(String[] rawAirportList) {
+            ArrayList icaoList = new ArrayList();
             foreach (var airportLine in rawAirportList) {
-                int i = 0;
-                icaoList[i] = Regex.Match(airportLine, @"\/(.*)\)").Groups[1].Value.Trim();
-                i++;
+                icaoList.Add(Regex.Match(airportLine, @"\/(.*)\)").Groups[1].Value.Trim());
             }
-            Console.WriteLine("Item 1: " + icaoList[0]);
             return icaoList;
         }
 
-        public void DisplayICAOCodes(String[] icaoList) {
-            for (int p = 0; p < icaoList.Length; p++) {
+        public void DisplayICAOCodes(ArrayList icaoList) {
+            for (int p = 0; p < icaoList.Count; p++) {
                 Console.WriteLine(icaoList[p]);
             }
         }
+
+        public void parseForK(WeatherData wd, ArrayList icaoList) {
+            int iterationValue = -1;
+            do {
+                iterationValue++;
+            } while (icaoList[iterationValue].ToString().Substring(0).ToUpper() == "K");
+            Console.WriteLine("SetICAO Value: " + "" + icaoList[iterationValue]);
+            wd.SetIcao("" + icaoList[iterationValue]);
+        }
     }
 
+    class GetUserDate {
+        public GetUserDate() {
+
+        }
+
+        public String getDate() {
+            Console.Write("Enter the date you would like to view(mm/dd/yyyy): ");
+            return Console.ReadLine();
+        }
+
+        private void formatDate() {
+
+        }
+
+    }
 
     class WeatherData {
         private String zip;
         private String longFormName;
         private String ICAO;
+        private String date;
 
         public String GetZip() {
             return this.zip;
@@ -178,6 +202,14 @@ namespace WeatherDisplay {
 
         public void SetLFN(String userCity, String userState) {
             this.longFormName = userCity + ", " + userState;
+        }
+
+        public void SetDate(String userDate) {
+            this.date = userDate;
+        }
+
+        public String GetDate() {
+            return this.date;
         }
 
     }
