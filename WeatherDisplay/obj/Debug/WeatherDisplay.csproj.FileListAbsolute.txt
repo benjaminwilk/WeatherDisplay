@@ -9,7 +9,6 @@ c:\users\mhp-14m-d5\source\repos\WeatherDisplay\WeatherDisplay\bin\Debug\Newtons
 c:\users\mhp-14m-d5\source\repos\WeatherDisplay\WeatherDisplay\bin\Debug\Newtonsoft.Json.pdb
 c:\users\mhp-14m-d5\source\repos\WeatherDisplay\WeatherDisplay\bin\Debug\Newtonsoft.Json.xml
 c:\users\mhp-14m-d5\source\repos\WeatherDisplay\WeatherDisplay\obj\Debug\WeatherDisplay.csproj.CopyComplete
-C:\Users\MHP-14M-D5\Source\Repos\benjaminwilk\WeatherDisplay\WeatherDisplay\obj\Debug\WeatherDisplay.csprojAssemblyReference.cache
 C:\Users\MHP-14M-D5\Source\Repos\benjaminwilk\WeatherDisplay\WeatherDisplay\obj\Debug\WeatherDisplay.exe.config
 C:\Users\MHP-14M-D5\Source\Repos\benjaminwilk\WeatherDisplay\WeatherDisplay\obj\Debug\WeatherDisplay.csproj.CoreCompileInputs.cache
 C:\Users\MHP-14M-D5\Source\Repos\benjaminwilk\WeatherDisplay\WeatherDisplay\obj\Debug\WeatherDisplay.exe
@@ -121,3 +120,4 @@ C:\Users\MHP-14M-D5\Source\Repos\benjaminwilk\WeatherDisplay\WeatherDisplay\obj\
 C:\Users\MHP-14M-D5\Source\Repos\benjaminwilk\WeatherDisplay\WeatherDisplay\bin\Debug\HtmlAgilityPack.dll
 C:\Users\MHP-14M-D5\Source\Repos\benjaminwilk\WeatherDisplay\WeatherDisplay\bin\Debug\HtmlAgilityPack.pdb
 C:\Users\MHP-14M-D5\Source\Repos\benjaminwilk\WeatherDisplay\WeatherDisplay\bin\Debug\HtmlAgilityPack.xml
+C:\Users\MHP-14M-D5\Source\Repos\benjaminwilk\WeatherDisplay\WeatherDisplay\obj\Debug\WeatherDisplay.csprojAssemblyReference.cache
