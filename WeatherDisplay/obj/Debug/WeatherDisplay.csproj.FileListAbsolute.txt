@@ -121,3 +121,6 @@ C:\Users\MHP-14M-D5\Source\Repos\benjaminwilk\WeatherDisplay\WeatherDisplay\bin\
 C:\Users\MHP-14M-D5\Source\Repos\benjaminwilk\WeatherDisplay\WeatherDisplay\bin\Debug\HtmlAgilityPack.pdb
 C:\Users\MHP-14M-D5\Source\Repos\benjaminwilk\WeatherDisplay\WeatherDisplay\bin\Debug\HtmlAgilityPack.xml
 C:\Users\MHP-14M-D5\Source\Repos\benjaminwilk\WeatherDisplay\WeatherDisplay\obj\Debug\WeatherDisplay.csprojAssemblyReference.cache
+C:\Users\MHP-14M-D5\Source\Repos\benjaminwilk\WeatherDisplay\WeatherDisplay\obj\Debug\WeatherDisplay.Properties.Resources.resources
+C:\Users\MHP-14M-D5\Source\Repos\benjaminwilk\WeatherDisplay\WeatherDisplay\obj\Debug\WeatherDisplay.csproj.GenerateResource.cache
+C:\Users\MHP-14M-D5\Source\Repos\benjaminwilk\WeatherDisplay\WeatherDisplay\obj\Debug\WeatherDisplay.MainPane.resources

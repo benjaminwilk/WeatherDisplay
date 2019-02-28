@@ -11,15 +11,26 @@ using System.Xml.Linq;
 using System.Text.RegularExpressions;
 using System.Collections;
 using System.Globalization;
+using System.Windows.Forms;
 
 namespace WeatherDisplay {
     class MainClass {
         static void Main(string[] args) {
-            Console.WriteLine("Hello World!"); // This is only in here to make sure the application is actually running.
+            Console.WriteLine("Hello World!"); // This is only in here to make sure the application is actually running
+            //        if (Int32.Parse(args[0]) == 1) {
+       //     Application.Run(new MainPane());
 
+
+           
+
+     //       } else {
+                ConsoleApplication();
+                Console.ReadKey();
+          //  }  
+        }
+
+        public static void ConsoleApplication() {
             new ObtainUserInformation();
-
-            Console.ReadKey();
         }
 
         public static string DownloadWebData(string userURL) { // Static function that downloads raw HTML data from chosen website.  
