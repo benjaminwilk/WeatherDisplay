@@ -16,21 +16,13 @@ using System.Windows.Forms;
 namespace WeatherDisplay {
     class MainClass {
         static void Main(string[] args) {
-            Console.WriteLine("Hello World!"); // This is only in here to make sure the application is actually running
-            //        if (Int32.Parse(args[0]) == 1) {
-       //     Application.Run(new MainPane());
-
-
-           
-
-     //       } else {
-                ConsoleApplication();
+            if (1 == 2) {
+                Application.Run(new MainPane());
+            } else {
+                Console.WriteLine("Hello World!"); // This is only in here to make sure the application is actually running
+                new ObtainUserInformation();
                 Console.ReadKey();
-          //  }  
-        }
-
-        public static void ConsoleApplication() {
-            new ObtainUserInformation();
+            }  
         }
 
         public static string DownloadWebData(string userURL) { // Static function that downloads raw HTML data from chosen website.  
@@ -101,7 +93,24 @@ namespace WeatherDisplay {
             this.wd.SetZip(userKeyedZip);
             this.wd.SetLFN(VerifyUserZip());
             this.wd.SetIcao(userKeyedICAO);
+            this.owd = new ObtainWeatherData(this.wd);
         }
+
+    /*    public ObtainUserInformation(String[] userArgData) {
+            if (userArgData.Length == 2) {
+                this.wd.SetZip(userArgData[0]);
+                this.wd.SetLFN(VerifyUserZip());
+                this.wd.SetIcao(userArgData[1]);
+
+            }
+            if(userArgData.Length == 1) {
+                this.wd.SetZip(userArgData[0]);
+                this.wd.SetLFN(VerifyUserZip());
+                String[] airportList = DivideAirportsByNewLine(ObtainRawAirportData());
+                this.wd.SetIcao(ParseForK(ObtainICAOCode(airportList)));
+            }
+            this.owd = new ObtainWeatherData(this.wd);
+        }*/
 
         public string UserZipInput() { 
             Console.Write("Enter your zip code: ");
@@ -291,9 +300,11 @@ namespace WeatherDisplay {
         public ObtainWeatherData(WeatherData wd) {
             string rawWeatherData = DownloadWeatherData(getWeatherURL(wd));
             ArrayList parsedWeatherData = ParseWeatherData(rawWeatherData);
-            InsertHeaderData(parsedWeatherData);
+            DefineRowsAndColumns(wd, parsedWeatherData);
+          //  InsertHeaderData(parsedWeatherData);
         //    wd.InitializeWeatherGraph();
             StoreWeatherData(wd, parsedWeatherData);
+            GetWeatherData(wd, 2, 7);
         }
 
         private string getWeatherURL(WeatherData wd) {
@@ -309,6 +320,23 @@ namespace WeatherDisplay {
             return "" + node.InnerText;
         }
 
+        private void DefineRowsAndColumns(WeatherData wd, ArrayList parsedWeatherData) {
+            int widthCount = 0;
+            int columnCount = 0;
+            do {
+                widthCount++;
+            } while (Char.IsDigit(Convert.ToChar(parsedWeatherData[widthCount].ToString()[0])) != true);
+
+            for (int p = 0; p < parsedWeatherData.Count; p++) {
+                Match m = Regex.Match("" + parsedWeatherData[p], "((1[0-2]|0?[1-9]):([0-5][0-9]) ([AP][M]))", RegexOptions.IgnoreCase);
+                if (m.Success) {
+                    columnCount++;
+                }
+        //        Console.WriteLine("Weather data: <" + parsedWeatherData[p] + ">");
+            }
+            wd.InitializeWeatherGraph(columnCount, widthCount);
+        }
+
         private ArrayList ParseWeatherData(string rawWeatherData) {
             ArrayList dataWeather = new ArrayList();
             string[] splitWeatherData = (rawWeatherData.Split('\n'));
@@ -318,23 +346,28 @@ namespace WeatherDisplay {
                 }
             }
             return dataWeather;
-            /*for (int p = 0; p < dataWeather.Count; p++) {
-                Console.WriteLine("Weather data: <" + dataWeather[p] + ">");
-            }*/
 
         }
 
-        private void InsertHeaderData(ArrayList parsedWeatherData) {
+      /*  private void InsertHeaderData(ArrayList parsedWeatherData) {
             
-        }
+        }*/
 
         private void StoreWeatherData(WeatherData wd, ArrayList parsedWeatherData) {
-            for (int columnValue = 0; columnValue < wd.GetWeatherDataLength(); columnValue++) {
+            int iterationValue = 0;
+            Console.WriteLine("Data Length: " + wd.GetWeatherDataLength() + "\tData Width: " + wd.GetWeatherDataWidth());
+            for (int columnValue = 0; columnValue < wd.GetWeatherDataLength() - 1; columnValue++) {
                 for (int rowValue = 0; rowValue < wd.GetWeatherDataWidth(); rowValue++) {
-                    Console.Write("columnValue: " + columnValue + "\t rowValue: " + rowValue);
+                    wd.SetWeatherGraphPoint(columnValue, rowValue, parsedWeatherData[iterationValue].ToString());
+                    iterationValue++;
                 }
+                Console.WriteLine();
 
             }
+        }
+
+        public void GetWeatherData(WeatherData wd, int userRow, int userColumn) {
+            Console.WriteLine(wd.GetWeatherPoint(userRow, userColumn));
         }
 
     }
@@ -390,8 +423,8 @@ namespace WeatherDisplay {
             this.wg = new WeatherGrapher(row, column);
         }
 
-        public string GetWeatherGraph(int row, int column) {
-            return this.wg.GetWeatherGraphPlot(row, column);
+        public string GetWeatherPoint(int row, int column) {
+            return this.wg.GetWeatherGraphPoint(row, column);
         }
 
         public string GetWeatherRow(int row) {
@@ -404,6 +437,14 @@ namespace WeatherDisplay {
         
         public int GetWeatherDataWidth() {
             return this.wg.GetWeatherDataWidth();
+        }
+
+        public void SetWeatherGraphPoint(int userRow, int userColumn, string dataToSet) {
+            this.wg.SetWeatherGraphPoint(userRow, userColumn, dataToSet);
+        }
+
+        public void GetWeatherWidthAndLength() {
+            this.wg.GetWeatherWidthAndLength();
         }
 
     }
@@ -427,18 +468,22 @@ namespace WeatherDisplay {
             return this.WeatherGraph.GetLength(1);
         }
 
-        public void setWeatherGraphData(int row, int column, string dataToSet) {
+        public void GetWeatherWidthAndLength() {
+            Console.WriteLine("Length: " + GetWeatherDataLength() + "\tWidth: " + GetWeatherDataWidth());
+        }
+
+        public void SetWeatherGraphPoint(int row, int column, string dataToSet) {
             this.WeatherGraph[row, column] = dataToSet;
         }
 
-        public String GetWeatherGraphPlot(int row, int column) {
+        public String GetWeatherGraphPoint(int row, int column) {
             return this.WeatherGraph[row, column];
         }
 
         public string GetWeatherGraphRow(int row) {
             StringBuilder weatherRow = new StringBuilder();
             for (int columnValue = 0; columnValue < this.WeatherGraph.Length - 5; columnValue++) {
-                weatherRow.Append(GetWeatherGraphPlot(row, columnValue) + "|");
+                weatherRow.Append(GetWeatherGraphPoint(row, columnValue) + "|");
             }
             Console.WriteLine("Weather row: " + weatherRow);
             return "" + weatherRow;
