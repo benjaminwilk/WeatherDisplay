@@ -245,66 +245,66 @@ namespace WeatherDisplay {
 
     }
 
-   /* class ObtainICAO {
-        public ObtainICAO(WeatherData wd) {
-            String[] airportList = SplitAirportsByNewLine(ObtainRawAirportData(wd));
-            //DisplayICAOCodes();
-            parseForK(wd, ObtainICAOCode(airportList));
-            //String rawAirportData = MainClass.downloadWebData(getAiportIcaoURL(wd.getZip()));
-            //Console.WriteLine(rawAirportData);
-        }
+    /* class ObtainICAO {
+         public ObtainICAO(WeatherData wd) {
+             String[] airportList = SplitAirportsByNewLine(ObtainRawAirportData(wd));
+             //DisplayICAOCodes();
+             parseForK(wd, ObtainICAOCode(airportList));
+             //String rawAirportData = MainClass.downloadWebData(getAiportIcaoURL(wd.getZip()));
+             //Console.WriteLine(rawAirportData);
+         }
 
-        private String GetAiportIcaoURL(WeatherData wd) {
-            return @"https://www.travelmath.com/nearest-airport/" + wd.GetZip();
-        }
+         private String GetAiportIcaoURL(WeatherData wd) {
+             return @"https://www.travelmath.com/nearest-airport/" + wd.GetZip();
+         }
 
-        public String ObtainRawAirportData(WeatherData wd) {
-            String airportURL = GetAiportIcaoURL(wd);
-            HtmlWeb webData = new HtmlWeb();
-            var htmlDoc = webData.Load(airportURL);
-            var node = htmlDoc.DocumentNode.SelectSingleNode(".//body/div[@id='wrapper']/div[@id='EchoTopic']/div[@class='leftcolumn']/p");
-            //var node1 = node.SelectSingleNode(".//div[@id='EchoTopic']");
-            //var node2 = node1.SelectSingleNode(".//div[@class='leftcolumn']/p");
-            return node.InnerText;
-        }
+         public String ObtainRawAirportData(WeatherData wd) {
+             String airportURL = GetAiportIcaoURL(wd);
+             HtmlWeb webData = new HtmlWeb();
+             var htmlDoc = webData.Load(airportURL);
+             var node = htmlDoc.DocumentNode.SelectSingleNode(".//body/div[@id='wrapper']/div[@id='EchoTopic']/div[@class='leftcolumn']/p");
+             //var node1 = node.SelectSingleNode(".//div[@id='EchoTopic']");
+             //var node2 = node1.SelectSingleNode(".//div[@class='leftcolumn']/p");
+             return node.InnerText;
+         }
 
-        public String[] DivideAirportsByNewLine(String rawAirportData) {
-            return rawAirportData.Split('\n');
-        }
+         public String[] DivideAirportsByNewLine(String rawAirportData) {
+             return rawAirportData.Split('\n');
+         }
 
-        public ArrayList ObtainICAOCode(String[] rawAirportList) {
-            ArrayList icaoList = new ArrayList();
-            foreach (var airportLine in rawAirportList) {
-                icaoList.Add(Regex.Match(airportLine, @"\/(.*)\)").Groups[1].Value.Trim());
-            }
-            return icaoList;
-        }
+         public ArrayList ObtainICAOCode(String[] rawAirportList) {
+             ArrayList icaoList = new ArrayList();
+             foreach (var airportLine in rawAirportList) {
+                 icaoList.Add(Regex.Match(airportLine, @"\/(.*)\)").Groups[1].Value.Trim());
+             }
+             return icaoList;
+         }
 
-        public void DisplayICAOCodes(ArrayList icaoList) {
-            for (int p = 0; p < icaoList.Count; p++) {
-                Console.WriteLine(icaoList[p]);
-            }
-        }
+         public void DisplayICAOCodes(ArrayList icaoList) {
+             for (int p = 0; p < icaoList.Count; p++) {
+                 Console.WriteLine(icaoList[p]);
+             }
+         }
 
-        public void parseForK(WeatherData wd, ArrayList icaoList) {
-            int iterationValue = -1;
-            do {
-                iterationValue++;
-            } while (icaoList[iterationValue].ToString().Substring(0).ToUpper() == "K");
-           // Console.WriteLine("SetICAO Value: " + "" + icaoList[iterationValue]);
-            wd.SetIcao("" + icaoList[iterationValue]);
-        }
-    }*/
+         public void parseForK(WeatherData wd, ArrayList icaoList) {
+             int iterationValue = -1;
+             do {
+                 iterationValue++;
+             } while (icaoList[iterationValue].ToString().Substring(0).ToUpper() == "K");
+            // Console.WriteLine("SetICAO Value: " + "" + icaoList[iterationValue]);
+             wd.SetIcao("" + icaoList[iterationValue]);
+         }
+     }*/
 
     class ObtainWeatherData {
         public ObtainWeatherData(WeatherData wd) {
             string rawWeatherData = DownloadWeatherData(getWeatherURL(wd));
             ArrayList parsedWeatherData = ParseWeatherData(rawWeatherData);
             DefineRowsAndColumns(wd, parsedWeatherData);
-          //  InsertHeaderData(parsedWeatherData);
-        //    wd.InitializeWeatherGraph();
+            //  InsertHeaderData(parsedWeatherData);
+            //    wd.InitializeWeatherGraph();
             StoreWeatherData(wd, parsedWeatherData);
-            GetWeatherData(wd, 2, 7);
+            GetWeatherRow(wd, 2);
         }
 
         private string getWeatherURL(WeatherData wd) {
@@ -332,14 +332,14 @@ namespace WeatherDisplay {
                 if (m.Success) {
                     columnCount++;
                 }
-        //        Console.WriteLine("Weather data: <" + parsedWeatherData[p] + ">");
+                //        Console.WriteLine("Weather data: <" + parsedWeatherData[p] + ">");
             }
             wd.InitializeWeatherGraph(columnCount, widthCount);
         }
 
         private ArrayList ParseWeatherData(string rawWeatherData) {
             ArrayList dataWeather = new ArrayList();
-            string[] splitWeatherData = (rawWeatherData.Split('\n'));
+            string[] splitWeatherData = (rawWeatherData.Replace("&deg;", " ").Replace("&amp;bsp;", " ").Replace("&nbsp;", " ").Split('\n'));
             for (int i = 0; i < splitWeatherData.Length; i++) {
                 if (string.IsNullOrEmpty(splitWeatherData[i].Trim()) == false) {
                     dataWeather.Add(splitWeatherData[i].Trim());
@@ -349,9 +349,9 @@ namespace WeatherDisplay {
 
         }
 
-      /*  private void InsertHeaderData(ArrayList parsedWeatherData) {
-            
-        }*/
+        /*  private void InsertHeaderData(ArrayList parsedWeatherData) {
+
+          }*/
 
         private void StoreWeatherData(WeatherData wd, ArrayList parsedWeatherData) {
             int iterationValue = 0;
@@ -361,13 +361,16 @@ namespace WeatherDisplay {
                     wd.SetWeatherGraphPoint(columnValue, rowValue, parsedWeatherData[iterationValue].ToString());
                     iterationValue++;
                 }
-                Console.WriteLine();
 
             }
         }
 
-        public void GetWeatherData(WeatherData wd, int userRow, int userColumn) {
+        public void GetWeatherPoint(WeatherData wd, int userRow, int userColumn) {
             Console.WriteLine(wd.GetWeatherPoint(userRow, userColumn));
+        }
+
+        public void GetWeatherRow(WeatherData wd, int userRow) {
+            wd.GetWeatherRow(userRow);
         }
 
     }
@@ -482,11 +485,19 @@ namespace WeatherDisplay {
 
         public string GetWeatherGraphRow(int row) {
             StringBuilder weatherRow = new StringBuilder();
-            for (int columnValue = 0; columnValue < this.WeatherGraph.Length - 5; columnValue++) {
-                weatherRow.Append(GetWeatherGraphPoint(row, columnValue) + "|");
+            for (int columnValue = 0; columnValue < GetWeatherDataWidth(); columnValue++) {
+                weatherRow.Append(SpacePadding(GetWeatherGraphPoint(row, columnValue)) + GetWeatherGraphPoint(row, columnValue) + GetWeatherGraphPoint(row, columnValue) + "|");
             }
             Console.WriteLine("Weather row: " + weatherRow);
             return "" + weatherRow;
+        }
+
+        private string SpacePadding(String passedWord) {
+            StringBuilder spaceBuffer = new StringBuilder();
+            for (int i = 0; i < passedWord.Length/2; i++) {
+                spaceBuffer.Append(" ");
+            }
+            return spaceBuffer.ToString();
         }
     }
 }
