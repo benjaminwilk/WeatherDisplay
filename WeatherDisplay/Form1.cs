@@ -26,9 +26,10 @@ namespace WeatherDisplay {
         }
 
         private void SubmitButton_Click(object sender, EventArgs e) {
-            ObtainUserInformation oui = new ObtainUserInformation(userZipBox, userDateBox);
-       //     ObtainWeatherData owd = new ObtainWeatherData();
-        //    displayBox.AppendText(oui.StoreWeatherData());
+            DisplayData dd = new DisplayData(zipBox.Text, dateBox.Text);
+            displayBox.AppendText(dd.getZip());
+            ObtainWeatherData owd = new ObtainWeatherData(dd.SendWeatherData());
+            displayBox.AppendText(owd.GetAllWeatherData(dd.SendWeatherData(), sender));
         }
 
         private void ResetButton_Click(object sender, EventArgs e) {

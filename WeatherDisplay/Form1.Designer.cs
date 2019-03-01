@@ -32,7 +32,7 @@
             // 
             // submitButton
             // 
-            this.submitButton.Location = new System.Drawing.Point(209, 53);
+            this.submitButton.Location = new System.Drawing.Point(690, 11);
             this.submitButton.Name = "submitButton";
             this.submitButton.Size = new System.Drawing.Size(75, 23);
             this.submitButton.TabIndex = 0;
@@ -42,9 +42,9 @@
             // 
             // zipBox
             // 
-            this.zipBox.Location = new System.Drawing.Point(12, 12);
+            this.zipBox.Location = new System.Drawing.Point(12, 14);
             this.zipBox.Name = "zipBox";
-            this.zipBox.Size = new System.Drawing.Size(159, 20);
+            this.zipBox.Size = new System.Drawing.Size(226, 20);
             this.zipBox.TabIndex = 1;
             this.zipBox.Tag = "";
             this.zipBox.Text = "Enter Zip Code";
@@ -54,16 +54,16 @@
             // 
             // displayBox
             // 
-            this.displayBox.Location = new System.Drawing.Point(12, 82);
+            this.displayBox.Location = new System.Drawing.Point(12, 40);
             this.displayBox.Multiline = true;
             this.displayBox.Name = "displayBox";
             this.displayBox.ReadOnly = true;
-            this.displayBox.Size = new System.Drawing.Size(293, 391);
+            this.displayBox.Size = new System.Drawing.Size(853, 433);
             this.displayBox.TabIndex = 2;
             // 
             // resetButton
             // 
-            this.resetButton.Location = new System.Drawing.Point(209, 12);
+            this.resetButton.Location = new System.Drawing.Point(771, 11);
             this.resetButton.Name = "resetButton";
             this.resetButton.Size = new System.Drawing.Size(75, 23);
             this.resetButton.TabIndex = 3;
@@ -73,9 +73,9 @@
             // 
             // dateBox
             // 
-            this.dateBox.Location = new System.Drawing.Point(12, 53);
+            this.dateBox.Location = new System.Drawing.Point(244, 13);
             this.dateBox.Name = "dateBox";
-            this.dateBox.Size = new System.Drawing.Size(159, 20);
+            this.dateBox.Size = new System.Drawing.Size(269, 20);
             this.dateBox.TabIndex = 4;
             this.dateBox.Text = "Enter Date (MM/DD/YYYY)";
             this.dateBox.Click += new System.EventHandler(this.DateBox_Click);
@@ -86,7 +86,7 @@
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(317, 485);
+            this.ClientSize = new System.Drawing.Size(877, 485);
             this.Controls.Add(this.dateBox);
             this.Controls.Add(this.resetButton);
             this.Controls.Add(this.displayBox);
