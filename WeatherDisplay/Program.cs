@@ -184,11 +184,11 @@ namespace WeatherDisplay {
         }
 
         private static string GetZipCodeURL(string passedZip) { // Returns the zip code url.
-            return "https://api.zippopotam.us/us/" + passedZip;
+            return @"https://api.zippopotam.us/us/" + passedZip;
         }
 
         private static string GetZipCodeURL() { // Returns the zip code url, but without the user passed zip code.
-            return "https://api.zippopotam.us/us/";
+            return @"https://api.zippopotam.us/us/";
         }
 
         private string GetAiportIcaoURL() {
@@ -196,21 +196,20 @@ namespace WeatherDisplay {
         }
 
         public String ObtainRawAirportData() {
-            String airportURL = GetAiportIcaoURL();
-            HtmlWeb webData = new HtmlWeb();
-            var htmlDoc = webData.Load(airportURL);
-            var node = htmlDoc.DocumentNode.SelectSingleNode(".//body/div[@id='wrapper']/div[@id='EchoTopic']/div[@class='leftcolumn']/p");
-            //var node1 = node.SelectSingleNode(".//div[@id='EchoTopic']");
-            //var node2 = node1.SelectSingleNode(".//div[@class='leftcolumn']/p");
-            return node.InnerText;
+            try {
+                String airportURL = GetAiportIcaoURL();
+                HtmlWeb webData = new HtmlWeb();
+                var htmlDoc = webData.Load(airportURL);
+                var node = htmlDoc.DocumentNode.SelectSingleNode(".//body/div[@id='wrapper']/div[@id='EchoTopic']/div[@class='leftcolumn']/p");
+                return node.InnerText;
+            } catch (Exception htmlerror) {
+                MainClass.Quitter("" + htmlerror);
+            }
+            return "-2";
         }
 
         public String[] DivideAirportsByNewLine(String rawAirportData) {
                 return rawAirportData.Split('\n');
-        }
-
-        public WeatherData ReturnWeatherData() {
-            return this.wd;
         }
 
         public ArrayList ObtainICAOCode(String[] rawAirportList) {
@@ -234,21 +233,6 @@ namespace WeatherDisplay {
             } while (icaoList[iterationValue].ToString().Substring(0).ToUpper() == "K");
             // Console.WriteLine("SetICAO Value: " + "" + icaoList[iterationValue]);
             return "" + icaoList[iterationValue];
-        }
-
-        private class OnlineZipStructure {
-            [JsonProperty(PropertyName = "post code")]
-            public string postCode { get; set; }
-            public string country { get; set; }
-            [JsonProperty(PropertyName = "country abbreviation")]
-            public string countryAbbreviation { get; set; }
-            [JsonProperty(PropertyName = "place name")]
-            public string placeName { get; set; }
-            public string longitude { get; set; }
-            public string state { get; set; }
-            [JsonProperty(PropertyName = "state abbreviation")]
-            public string stateAbbreviation { get; set; }
-            public string latitude { get; set; }
         }
 
     }
@@ -308,7 +292,7 @@ namespace WeatherDisplay {
         public ObtainWeatherData(WeatherData wd) {
             string rawWeatherData = DownloadWeatherData(getWeatherURL(wd));
             ArrayList parsedWeatherData = ParseWeatherData(rawWeatherData);
-            DefineRowsAndColumns(wd, parsedWeatherData);
+            wd.InitializeWeatherGraph(DefineRows(parsedWeatherData), DefineRowsColumns(parsedWeatherData));
             //  InsertHeaderData(parsedWeatherData);
             //    wd.InitializeWeatherGraph();
             StoreWeatherData(wd, parsedWeatherData);
@@ -320,7 +304,7 @@ namespace WeatherDisplay {
             Console.WriteLine("Zip:" + wd.GetZip());
            string rawWeatherData = DownloadWeatherData(getWeatherURL(wd));
             ArrayList parsedWeatherData = ParseWeatherData(rawWeatherData);
-            DefineRowsAndColumns(wd, parsedWeatherData);
+            wd.InitializeWeatherGraph(DefineRows(parsedWeatherData), DefineRowsColumns(parsedWeatherData));
         //  InsertHeaderData(parsedWeatherData);
         //    wd.InitializeWeatherGraph();
             StoreWeatherData(wd, parsedWeatherData);
@@ -343,21 +327,24 @@ namespace WeatherDisplay {
             return "" + node.InnerText;
         }
 
-        private void DefineRowsAndColumns(WeatherData wd, ArrayList parsedWeatherData) {
+        public int DefineRows(ArrayList parsedWeatherData) {
             int widthCount = 0;
-            int columnCount = 0;
             do {
                 widthCount++;
             } while (Char.IsDigit(Convert.ToChar(parsedWeatherData[widthCount].ToString()[0])) != true);
+            return widthCount;
+        }
 
+        private int DefineRowsColumns(ArrayList parsedWeatherData) {
+            int columnCount = 0;
+        
             for (int p = 0; p < parsedWeatherData.Count; p++) {
                 Match m = Regex.Match("" + parsedWeatherData[p], "((1[0-2]|0?[1-9]):([0-5][0-9]) ([AP][M]))", RegexOptions.IgnoreCase);
                 if (m.Success) {
                     columnCount++;
                 }
-                //        Console.WriteLine("Weather data: <" + parsedWeatherData[p] + ">");
             }
-            wd.InitializeWeatherGraph(columnCount + 1, widthCount);
+            return columnCount + 1;
         }
 
         private ArrayList ParseWeatherData(string rawWeatherData) {
@@ -690,21 +677,21 @@ namespace WeatherDisplay {
             return "" + icaoList[iterationValue];
         }
 
-        private class OnlineZipStructure {
-            [JsonProperty(PropertyName = "post code")]
-            public string postCode { get; set; }
-            public string country { get; set; }
-            [JsonProperty(PropertyName = "country abbreviation")]
-            public string countryAbbreviation { get; set; }
-            [JsonProperty(PropertyName = "place name")]
-            public string placeName { get; set; }
-            public string longitude { get; set; }
-            public string state { get; set; }
-            [JsonProperty(PropertyName = "state abbreviation")]
-            public string stateAbbreviation { get; set; }
-            public string latitude { get; set; }
-        }
+    }
 
+    public class OnlineZipStructure {
+        [JsonProperty(PropertyName = "post code")]
+        public string postCode { get; set; }
+        public string country { get; set; }
+        [JsonProperty(PropertyName = "country abbreviation")]
+        public string countryAbbreviation { get; set; }
+        [JsonProperty(PropertyName = "place name")]
+        public string placeName { get; set; }
+        public string longitude { get; set; }
+        public string state { get; set; }
+        [JsonProperty(PropertyName = "state abbreviation")]
+        public string stateAbbreviation { get; set; }
+        public string latitude { get; set; }
     }
 
 }
