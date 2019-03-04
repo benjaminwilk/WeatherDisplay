@@ -39,6 +39,7 @@
             this.submitButton.Text = "Submit";
             this.submitButton.UseVisualStyleBackColor = true;
             this.submitButton.Click += new System.EventHandler(this.SubmitButton_Click);
+            this.submitButton.KeyDown += new System.Windows.Forms.KeyEventHandler(this.submitButton_KeyDown);
             // 
             // zipBox
             // 
@@ -50,6 +51,7 @@
             this.zipBox.Text = "Enter Zip Code";
             this.zipBox.Click += new System.EventHandler(this.ZipBox_Click);
             this.zipBox.TextChanged += new System.EventHandler(this.ZipBox_textChanged);
+            this.zipBox.KeyDown += new System.Windows.Forms.KeyEventHandler(this.zipBox_KeyDown);
             this.zipBox.Leave += new System.EventHandler(this.ZipBox_Leave);
             // 
             // displayBox
@@ -70,6 +72,7 @@
             this.resetButton.Text = "Reset";
             this.resetButton.UseVisualStyleBackColor = true;
             this.resetButton.Click += new System.EventHandler(this.ResetButton_Click);
+            this.resetButton.KeyDown += new System.Windows.Forms.KeyEventHandler(this.resetButton_KeyDown);
             // 
             // dateBox
             // 
@@ -80,6 +83,7 @@
             this.dateBox.Text = "Enter Date (MM/DD/YYYY)";
             this.dateBox.Click += new System.EventHandler(this.DateBox_Click);
             this.dateBox.TextChanged += new System.EventHandler(this.DateBox_textChanged);
+            this.dateBox.KeyDown += new System.Windows.Forms.KeyEventHandler(this.dateBox_KeyDown);
             this.dateBox.Leave += new System.EventHandler(this.DateBox_Leave);
             // 
             // MainPane

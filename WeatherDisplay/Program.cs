@@ -21,8 +21,11 @@ namespace WeatherDisplay {
             if (1 != 2) {
                 Application.Run(new MainPane());
             } else {
-                Console.WriteLine("Hello World!"); // This is only in here to make sure the application is actually running
-                new ObtainUserInformation();
+                do {
+                    Console.WriteLine("Hello World!"); // This is only in here to make sure the application is actually running
+                    new ObtainUserInformation();
+                    Console.Write("Would you like to run again (Y/N): ");
+                } while (Char.ToUpper(Console.ReadLine()[0]) == 'Y');
                 Console.ReadKey();
             }  
         }
@@ -91,10 +94,12 @@ namespace WeatherDisplay {
             this.wd.SetIcao(ParseForK(ObtainICAOCode(airportList)));
         }
 
-        public ObtainUserInformation(String userKeyedZip, String userKeyedICAO, object sender) {
+        public ObtainUserInformation(String userKeyedZip, String userKeyedDate, object sender) {
             this.wd.SetZip(userKeyedZip);
-            this.wd.SetLFN(VerifyUserZip());
-            this.wd.SetIcao(userKeyedICAO);
+            this.wd.SetDate(userKeyedDate);
+            //this.wd.SetLFN(VerifyUserZip());
+
+            ///this.wd.SetIcao(userKeyedICAO);
 
          //   this.owd = new ObtainWeatherData(this.wd);
         }
@@ -121,7 +126,7 @@ namespace WeatherDisplay {
             return Console.ReadLine();
         }
 
-        private Boolean ValidateZipInput(string userZip) { // Mother function of CheckZipLength() and CheckZipContents().  If either of those functions come back false, a boolean false will be generated.
+        public Boolean ValidateZipInput(string userZip) { // Mother function of CheckZipLength() and CheckZipContents().  If either of those functions come back false, a boolean false will be generated.
             if (CheckZipLength(userZip) == true || CheckZipForLetters(userZip) == true) {
                 return true;
             }
@@ -141,8 +146,9 @@ namespace WeatherDisplay {
         private Boolean CheckZipLength(string userZip) { // Checks the length of the user input zip; if the input is not 5 characters, it will return false.
             if (userZip.Length == 5) {
                 return true;
+            } else {
+                return false;
             }
-            return false;
         }
 
         private Boolean ValidDateInput(string userDate) {
@@ -164,12 +170,12 @@ namespace WeatherDisplay {
             return rawURLData.Replace("\"places\": [{", "").Replace("}]", "");
         }
 
-        public string  UserDateInput() {
+        public string UserDateInput() {
             Console.Write("Enter the date you would like to view(mm/dd/yyyy): ");
             return Console.ReadLine();
         }
 
-        private string DateFormatter(String userDate) {
+        public string DateFormatter(String userDate) {
             string dateFormat = "MM/dd/yyyy";
             string newDateFormat = "yyyy/MM/dd";
             DateTime parsedDate;
@@ -301,7 +307,7 @@ namespace WeatherDisplay {
         }
 
         public ObtainWeatherData(WeatherData wd, object o) {
-            Console.WriteLine("Zip:" + wd.GetZip());
+            Console.WriteLine("Zip: " + getWeatherURL(wd));
            string rawWeatherData = DownloadWeatherData(getWeatherURL(wd));
             ArrayList parsedWeatherData = ParseWeatherData(rawWeatherData);
             wd.InitializeWeatherGraph(DefineRows(parsedWeatherData), DefineRowsColumns(parsedWeatherData));
@@ -318,13 +324,19 @@ namespace WeatherDisplay {
         }
 
         private string DownloadWeatherData(string downloadWeatherURL) {
-            Console.WriteLine(downloadWeatherURL);
-            string airportURL = downloadWeatherURL;
-            HtmlWeb webData = new HtmlWeb();
-            var htmlDoc = webData.Load(airportURL);
-            var node = htmlDoc.DocumentNode.SelectSingleNode(".//body/div[@id='content-wrap']/div[@id='inner-wrap']/section[@id='inner-content']/div[@class='mainWrapper']/div[@class='row collapse']/div[@class='column large-12']/div[@id='observations_details']");
-            //Console.WriteLine(node.InnerText);
-            return "" + node.InnerText;
+            try {
+                Console.WriteLine(downloadWeatherURL);
+                string airportURL = downloadWeatherURL;
+                HtmlWeb webData = new HtmlWeb();
+                var htmlDoc = webData.Load(airportURL);
+                Console.WriteLine(htmlDoc);
+                var node = htmlDoc.DocumentNode.SelectSingleNode(".//body/div[@id='content-wrap']/div[@id='inner-wrap']/section[@id='inner-content']/div[@class='mainWrapper']/div[@class='row collapse']/div[@class='column large-12']/div[@id='observations_details']");
+                //Console.WriteLine(node.InnerText);
+                return "" + node.InnerText;
+            } catch (Exception nullValue) {
+                MainClass.Quitter("" + nullValue);
+            }
+            return "ERROR";
         }
 
         public int DefineRows(ArrayList parsedWeatherData) {
@@ -366,7 +378,7 @@ namespace WeatherDisplay {
 
         private void StoreWeatherData(WeatherData wd, ArrayList parsedWeatherData) {
             int iterationValue = 0;
-            Console.WriteLine("Data Length: " + wd.GetWeatherDataLength() + "\tData Width: " + wd.GetWeatherDataWidth());
+        //    Console.WriteLine("Data Length: " + wd.GetWeatherDataLength() + "\tData Width: " + wd.GetWeatherDataWidth());
             for (int columnValue = 0; columnValue < wd.GetWeatherDataLength(); columnValue++) {
                 for (int rowValue = 0; rowValue < wd.GetWeatherDataWidth(); rowValue++) {
                     wd.SetWeatherGraphPoint(columnValue, rowValue, parsedWeatherData[iterationValue].ToString());
@@ -391,7 +403,11 @@ namespace WeatherDisplay {
             }
         }
 
-        public void GetWeatherPoint(WeatherData wd, int userRow, int userColumn) {
+        public string GetWeatherPoint(WeatherData wd, int userRow, int userColumn) {
+            return wd.GetWeatherPoint(userRow, userColumn);
+        }
+
+        public void DisplayWeatherPoint(WeatherData wd, int userRow, int userColumn) {
             Console.WriteLine(wd.GetWeatherPoint(userRow, userColumn));
         }
 
@@ -405,7 +421,8 @@ namespace WeatherDisplay {
         }
 
         public string GetWeatherRow(WeatherData wd, int userRow) {
-            return wd.GetWeatherRow(userRow);
+            StringBuilder rowData = new StringBuilder();
+            return rowData.Append(wd.GetWeatherRow(userRow)).ToString();
         }
 
     }
@@ -416,10 +433,6 @@ namespace WeatherDisplay {
         private string ICAO;
         private string date;
         private WeatherGrapher wg;
-
-        public WeatherData() {
-
-        }
 
         public string GetZip() {
             return this.zip;
@@ -449,12 +462,12 @@ namespace WeatherDisplay {
             this.longFormName = userJoinedName;
         }
 
-        public void SetDate(string userDate) {
-            this.date = userDate;
-        }
-
         public string GetDate() {
             return this.date;
+        }
+
+        public void SetDate(string userDate) {
+            this.date = userDate;
         }
 
         public void InitializeWeatherGraph() {
@@ -486,13 +499,8 @@ namespace WeatherDisplay {
         }
 
         public void DisplayWeatherWidthAndLength() {
-            this.wg.DisplayWeatherWidthAndLength();
+            Console.WriteLine("Length: " + this.wg.GetWeatherDataLength() + "\tWidth: " + this.wg.GetWeatherDataWidth());
         }
-
-        public WeatherGrapher CopyWeatherData() {
-            return this.wg;
-        }
-
     }
 
     class WeatherGrapher {
@@ -518,10 +526,6 @@ namespace WeatherDisplay {
             return this.WeatherGraph.GetLength(1);
         }
 
-        public void DisplayWeatherWidthAndLength() {
-            Console.WriteLine("Length: " + GetWeatherDataLength() + "\tWidth: " + GetWeatherDataWidth());
-        }
-
         public void SetWeatherGraphPoint(int row, int column, string dataToSet) {
             this.WeatherGraph[row, column] = dataToSet;
         }
@@ -532,15 +536,16 @@ namespace WeatherDisplay {
 
         public string GetWeatherGraphRow(int row) {
             StringBuilder weatherRow = new StringBuilder();
-            for (int columnValue = 0; columnValue < GetWeatherDataWidth(); columnValue++) {
-                weatherRow.Append(SpacePadding(GetWeatherGraphPoint(row, columnValue), columnValue) + GetWeatherGraphPoint(row, columnValue) + SpacePadding(GetWeatherGraphPoint(row, columnValue), columnValue) + "|");
+            for (int columnValue = 0; columnValue < GetWeatherDataLength(); columnValue++) {
+                 weatherRow.Append(SpacePadding(GetWeatherGraphPoint(row, columnValue), columnValue) + GetWeatherGraphPoint(row, columnValue) + SpacePadding(GetWeatherGraphPoint(row, columnValue), columnValue) + "|");
+                //weatherRow.Append(GetWeatherGraphPoint(row, columnValue) + "|");
             }
       //      Console.WriteLine("Weather row: " + weatherRow);
             return "" + weatherRow;
         }
 
         private string SpacePadding(string passedWord, int iterationValue) {
-            int[] columnValue = {7, 7, 7, 9, 8, 8, 8, 8, 8, 4, 8, 4, 4};
+            int[] columnValue = {7, 7, 7, 9, 8, 8, 8, 8, 8, 4, 8, 4, 4, 4, 4, 4};
             StringBuilder spaceBuffer = new StringBuilder();
             if (passedWord.Equals("-") || passedWord.Equals("N/A")) {
                 return spaceBuffer.Append("     ").ToString();
@@ -558,125 +563,6 @@ namespace WeatherDisplay {
             }
             return spaceBuffer.ToString();
         }
-    }
-
-    class DisplayData {
-        WeatherData wd = new WeatherData();
-        public DisplayData(string GUIZip, string GUIDate) {
-            this.wd.SetZip(GUIZip);
-            this.wd.SetDate(GUIDate);
-            this.wd.SetLFN(VerifyUserZip());
-            String[] airportList = DivideAirportsByNewLine(ObtainRawAirportData());
-            this.wd.SetIcao(ParseForK(ObtainICAOCode(airportList)));
-        }
-
-        public WeatherData SendWeatherData() {
-            return this.wd;
-        }
-
-        private Boolean ValidDateInput(string userDate) {
-            return true;
-        }
-
-        private string VerifyUserZip() {
-            try {
-                string splitJsonData = FormatRawWebDataFromURL(MainClass.DownloadWebData(GetZipCodeURL(wd.GetZip())));
-                OnlineZipStructure account = JsonConvert.DeserializeObject<OnlineZipStructure>(splitJsonData);
-                return account.placeName + ", " + account.stateAbbreviation;
-            } catch (Exception e) {
-                MainClass.Quitter("" + e, "Unable to deserialize zip code.");
-            }
-            return "Failure";
-        }
-
-        public String getZip() {
-            return this.wd.GetZip();
-        }
-
-        public String GetDate() {
-            return this.wd.GetDate();
-        }
-
-        public String GetLFN() {
-            return this.GetLFN();
-        }
-
-        private string FormatRawWebDataFromURL(string rawURLData) { // This function takes in the raw URL data downloaded from the static function above, and then removes the brackets.
-            return rawURLData.Replace("\"places\": [{", "").Replace("}]", "");
-        }
-
-        public string UserDateInput() {
-            Console.Write("Enter the date you would like to view(mm/dd/yyyy): ");
-            return Console.ReadLine();
-        }
-
-        private string DateFormatter(String userDate) {
-            string dateFormat = "MM/dd/yyyy";
-            string newDateFormat = "yyyy/MM/dd";
-            DateTime parsedDate;
-            try {
-                DateTime.TryParseExact(userDate, dateFormat, null,
-                                    DateTimeStyles.None, out parsedDate);
-                return parsedDate.ToString(newDateFormat);
-            } catch (WebException we) {
-                MainClass.Quitter("" + we, "Unable to format provided date.");
-            }
-            return "-1";
-        }
-
-        private static string GetZipCodeURL(string passedZip) { // Returns the zip code url.
-            return "https://api.zippopotam.us/us/" + passedZip;
-        }
-
-        private static string GetZipCodeURL() { // Returns the zip code url, but without the user passed zip code.
-            return "https://api.zippopotam.us/us/";
-        }
-
-        private string GetAiportIcaoURL() {
-            return @"https://www.travelmath.com/nearest-airport/" + this.wd.GetZip();
-        }
-
-        public String ObtainRawAirportData() {
-            String airportURL = GetAiportIcaoURL();
-            HtmlWeb webData = new HtmlWeb();
-            var htmlDoc = webData.Load(airportURL);
-            var node = htmlDoc.DocumentNode.SelectSingleNode(".//body/div[@id='wrapper']/div[@id='EchoTopic']/div[@class='leftcolumn']/p");
-            //var node1 = node.SelectSingleNode(".//div[@id='EchoTopic']");
-            //var node2 = node1.SelectSingleNode(".//div[@class='leftcolumn']/p");
-            return node.InnerText;
-        }
-
-        public String[] DivideAirportsByNewLine(String rawAirportData) {
-            return rawAirportData.Split('\n');
-        }
-
-        public WeatherData ReturnWeatherData() {
-            return this.wd;
-        }
-
-        public ArrayList ObtainICAOCode(String[] rawAirportList) {
-            ArrayList icaoList = new ArrayList();
-            foreach (var airportLine in rawAirportList) {
-                icaoList.Add(Regex.Match(airportLine, @"\/(.*)\)").Groups[1].Value.Trim());
-            }
-            return icaoList;
-        }
-
-        public void DisplayICAOCodes(ArrayList icaoList) {
-            for (int p = 0; p < icaoList.Count; p++) {
-                Console.WriteLine(icaoList[p]);
-            }
-        }
-
-        public string ParseForK(ArrayList icaoList) {
-            int iterationValue = -1;
-            do {
-                iterationValue++;
-            } while (icaoList[iterationValue].ToString().Substring(0).ToUpper() == "K");
-            // Console.WriteLine("SetICAO Value: " + "" + icaoList[iterationValue]);
-            return "" + icaoList[iterationValue];
-        }
-
     }
 
     public class OnlineZipStructure {

@@ -26,15 +26,27 @@ namespace WeatherDisplay {
         }
 
         private void SubmitButton_Click(object sender, EventArgs e) {
-            DisplayData dd = new DisplayData(zipBox.Text, dateBox.Text);
-            displayBox.AppendText(dd.getZip());
-            ObtainWeatherData owd = new ObtainWeatherData(dd.SendWeatherData());
-            displayBox.AppendText(owd.GetAllWeatherData(dd.SendWeatherData(), sender));
+            WeatherData displayWD = new WeatherData();
+            displayWD.SetZip(this.userZipBox = zipBox.Text);
+            ObtainUserInformation oui = new ObtainUserInformation((displayWD.GetZip()), (displayWD.GetDate()), sender);
+            displayWD.SetDate(oui.DateFormatter(this.userDateBox = dateBox.Text));
+            if (oui.ValidateZipInput(displayWD.GetZip()) == false) {
+                displayBox.AppendText("Sorry, that is an invalid zip code.");
+            } else {
+                string[] rawAirportData = oui.DivideAirportsByNewLine(oui.ObtainRawAirportData());
+                displayWD.SetIcao(oui.ParseForK(oui.ObtainICAOCode(rawAirportData)));
+                ObtainWeatherData owd = new ObtainWeatherData(displayWD, sender);
+                // displayBox.AppendText("Width: " + displayWD.GetWeatherDataWidth() + "\tLength: " + displayWD.GetWeatherDataLength());
+                for (int i = 0; i < displayWD.GetWeatherDataLength(); i++) {
+                    displayBox.AppendText(owd.GetWeatherRow(displayWD, i));
+                }
+            }
+            //displayBox.AppendText(owd.GetAllWeatherData(dd.SendWeatherData(), sender));
         }
-
         private void ResetButton_Click(object sender, EventArgs e) {
             dateBox.Text = "Enter Date (MM/DD/YYYY)";
             zipBox.Text = "Enter Zip Code";
+
             displayBox.Clear();
         }
 
@@ -65,5 +77,28 @@ namespace WeatherDisplay {
                 zipBox.Text = "Enter Zip Code";
             }
         }
+
+        private void zipBox_KeyDown(object sender, KeyEventArgs e) {
+            if (e.KeyCode == Keys.Tab)
+                dateBox.Focus();
+        }
+
+        private void dateBox_KeyDown(object sender, KeyEventArgs e) {
+            if (e.KeyCode == Keys.Tab)
+                submitButton.Focus();
+        }
+
+        private void submitButton_KeyDown(object sender, KeyEventArgs e) {
+            if (e.KeyCode == Keys.Tab)
+                resetButton.Focus();
+        }
+
+        private void resetButton_KeyDown(object sender, KeyEventArgs e) {
+            if (e.KeyCode == Keys.Tab)
+                zipBox.Focus();
+        }
+
     }
+
 }
+
